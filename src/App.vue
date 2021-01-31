@@ -1,12 +1,36 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <action-status
+      :scope="{
+        simpleAction: 'simpleAsynchronousAction',
+        errorAction: 'errorAsynchronousAction'
+      }"
+    >
+      <div slot-scope="{ simpleAction, errorAction }">
+        <button>
+          <div v-if="simpleAction.isLoading">Loading</div>
+          <div v-if="simpleAction.isFailed">Error</div>
+          <div v-if="simpleAction.isSuccessful">Success</div>
+        </button>
+        <button>
+          <div v-if="errorAction.isLoading">Loading</div>
+          <div v-if="errorAction.isFailed">Error: {{ errorAction.error }}</div>
+          <div v-if="errorAction.isSuccessful">Success</div>
+        </button>
+      </div>
+    </action-status>
   </div>
 </template>
+
+<script>
+export default {
+  created() {
+    this.$store.dispatch('simpleSynchronousAction')
+    this.$store.dispatch('simpleAsynchronousAction')
+    this.$store.dispatch('errorAsynchronousAction')
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
